@@ -1,0 +1,90 @@
+---
+title: "Homework 5"
+author: "Celine Park"
+format:
+  html:
+    toc: true
+    toc-location: left
+    code-fold: true
+    theme: yeti
+editor: visual
+execute: 
+  message: false
+  warning: false
+---
+
+**Introduction**: 
+Sarrencia, otherwise known as the North American Pitcher plant, are the largest group of carnivorous plants and Sarrencia is one of the largest pitcher plant genera. According to the National Library of Medicine, the leaf extract of Sarrencia is a "traditional medicine for the treatment of type 2 diabetes", and possesses "antimycobacterial activity for the treatment of tuberculosis-like symptoms". Pitcher plants could be useful to predict individual biomass from physiological adaptations because when pitcher plants have evolved to survive in nutrient-poor environments. Pitcher plants "attracts, traps, and digests prey, to absorb their soluble ingredients for growth and reproduction." Predicting biomass for this physiological characteristic could be important because one could study how, depending on the plant's biomass, each pitcher plant could absorb nutrients faster. The question we are thus addressing is how Sarracenia characteristics predict biomass. The hypothesis that we are testing is that ______. 
+
+Loading the libraries
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(ggeffects)
+library(performance)
+library(naniar) # or equivalent
+library(flextable) # or equivalent
+library(car)
+library(broom)
+library(corrplot)
+library(AICcmodavg)
+library(GGally)
+```
+
+Read in data
+```{r}
+plant <- read_csv(here("data", "knb-lter-hfr.109.18", "hf109-01-sarracenia.csv")) %>% 
+  # make the column names cleaner
+  clean_names() %>% 
+  # selecting the columns of interest
+  select(totmass, species, feedlevel, sla, chlorophyll, amass, num_lvs, num_phylls)
+```
+
+**Methods**:
+Sampling Methods: 
+a. The data that was collected was collected by conducting a manipulative feeding experiment to test morphological and physiological allometric relationships of carnivorous plants when nutrients are not limiting are more similar to allometric relationships of non-carnivorous plants. The effects of prey availibility oh photosynthetic rate, chlorophyll fluorescence, growth, architecture, and foliar nutrient and chlorophyll content were tested.
+
+b. The data was organized with 32 variables and 120 observations. The data was processed through through quarto document, where the relevant columns were selected (totmass, species, feedlevel, sla, chlorophyll, amass, num_lvs, num_phylls). The data was also cleaned by dropping the NA values. 
+
+c. Visualizing missing data:
+```{r}
+gg_miss_var(plant) + 
+  labs(caption = "This is a visualization of the missing data. This visualization shows that there is missing data for chlorophyll, amass, sla, num_phylls, and num_lvs.") +
+  theme(plot.caption = element_text(size = 7, hjust=0.5))
+
+```
+This shows that the data may be affected due to the missing variables that are in this dataset. Due to the large amount of missing data from chlorophyll, amass, and sla, the precision of the findings may be impacted. 
+
+d. Visualization of Pearson's correlation 
+
+```{r}
+plant_subset <- plant %>% 
+  drop_na(sla, chlorophyll, amass, num_lvs, num_phylls) #subsetting the data by dropping NAs
+
+# calculate Pearson's r for numerical values only
+plant_cor <- plant_subset %>% 
+  select(feedlevel:num_phylls) %>% 
+  cor(method = "pearson")
+  
+# creating a correlation plot
+corrplot(plant_cor,
+         # change the shape of what's in the cells
+         method = "ellipse",
+         addCoef.col = "black") 
+
+
+  labs(caption = "To determine the relationships between numerical variables in our dataset, we calculated Pearsons r and visually represented correlation using a correlation plot.")
+  
+print(corrrplot + labs(caption = "To determine the relationships between numerical variables in our dataset, we calculated Pearsons r and visually represented correlation using a correlation plot.") )
+
+```
+
+
+
+
+
+
+
+
+
