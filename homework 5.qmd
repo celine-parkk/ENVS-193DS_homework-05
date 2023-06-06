@@ -135,6 +135,12 @@ plot(model3_log) #plotting model 3 log which uses chlorophyll as predictor varia
 
 In this case, the predictor variable was just 'chlorophyll', while the response variable was (log(totmass)). This predictor variable was chosen to see if the amount of chlorophyll of the plants was affecting the relationship between total mass and species. 
 
+```{r}
+model4_log <- lm(log(totmass) ~ species + sla + feedlevel + chlorophyll + num_lvs + num_phylls, data = plant_subset)
+model4_log
+```
+
+
 j. 
 ```{r}
 car::vif(full_log) #evaluating multicollinearity
@@ -148,7 +154,35 @@ AICc(full_log) #compare full model using Akaike’s Information criterion (AIC) 
 AICc(null_log) #compare null model using Akaike’s Information criterion (AIC) values
 AICc(model2_log) #compare model2 log using Akaike’s Information criterion (AIC) values
 AICc(model3_log) #compare model 3 using Akaike’s Information criterion (AIC) values
+AICc(model4_log) #comare model 4 using Akike's Information criterion (AIC) values
 MuMIn::model.sel(full_log, model2_log, null_log) #creating model selection table
 ```
-Results
+Results:
+8a. We found that the 4th model including all the predictor variables except amas(mass-based light-saturated photosynthetic rate of youngest leaf) best predicted the relationship between the characteristics and biomass. This model was chosen because between all the models, this model had the lowest AIc value.
+```{r}
+summary(model4_log)
+table <- tidy(model4_log, conf.int = TRUE, exponentiate = TRUE) %>% 
+  # change the p-value numbers if they're really small
+  # change the estmaes, standard error, and t-tstatistics to round to ___ digits
+  # using mutate
+  # make it into a flextable
+  flextable() %>% 
+  # fit it to the viewer
+  autofit()
 
+table
+```
+
+
+b.
+This model indicates that there is a significant relationship between most of the response variables and the biomass. All of the p-values, except for feed level is less .05, which indicates that the predictor variable has a significant effect on the response variable (biomass).  The F-statistic is also 41.26 with a p-value less than 0.05 which indicates that the model as a whole is statistically significant.
+
+c. 
+```{r}
+model_pred <- ggpredict(model4_log, terms = "species", back.transform = TRUE) #creating ggpredict plot
+
+plot(ggpredict(model4_log, terms = "species", back.transform = TRUE), add.data = TRUE) + #response variable is species
+  labs(caption = "Visualization of model predictions, which shows the relationship between species and the biomass. This graph shows that there is a strong correlation between species and biomass.") +
+  theme(plot.caption = element_text(size = 6, hjust=0.5)) #adjusting caption plot size
+```
+d. Biologically, it shows that the species of the Sarrencia plants predict the biomass. For example, in this model visualization, it shows that the Leucophylla have the biggest biomass. Thus, depending on the species of the Sarrencia, one can predict the biomass of the plant.
