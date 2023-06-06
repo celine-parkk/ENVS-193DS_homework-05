@@ -82,9 +82,9 @@ Thus, while analyzing this plot, we can see that the strongest correlation is be
 
 e. Pairs plot
 ```{r}
-plant_subset %>% 
-  select(species:num_phylls) %>% 
-  ggpairs(title = "This graph creates a plot of each variable compared against the others. Scatterplots of each pair of numeric variables are drawn on the left, while pearson correlation is displayed on the right. Variable distribution is on the diagonal.") 
+plant_subset %>%  
+  select(species:num_phylls) %>% #creating a ggpairs plot and selecting the num_phylls species
+  ggpairs(title = "This graph creates a plot of each variable compared against the others. Scatterplots of each pair of numeric variables are drawn on the left, while pearson correlation is displayed on the right. Variable distribution is on the diagonal.") #adding the caption
   
 ```
 
@@ -93,24 +93,62 @@ This, while analyzing this plot it shows that while analyzing the density plots 
 
 
 f. Null and full model
-To 
 ```{r}
-null <- lm(totmass ~ 1, data = plant_subset)
-full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
+null <- lm(totmass ~ 1, data = plant_subset) #using plant_subse data and using totmass as response variable
+full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset) #creating a model with all the predictor variables
 
+null
+full
 
 ```
-By analyzing the null and full model, we see that  
+To determine how species and physiological characteristics predict biomass, we fit multiple linear models. By analyzing the null and full model, we see both positive and negative between the predictor (totmass), and the response variable. Additionally, larger coefficients suggest a stronger impact on the response variable. For example. The correlation that is the weakest is with speciespsittacin, with a coefficient of -4.1934. The correlation that is the strongest is with speciesleucophylla, with a coefficient of 12.657.
 
 g. Visual and statistical assumptions checks
 ```{r}
 par(mfrow = c(2, 2))
-plot(full)
+plot(full) #creating visual assumptions check plot
+```
+For the most part, the data looks normal. The residuals vs. fitted plot appears randomly scattered along the horizontal line. Similarly, the Q-Q Residuals also follows a line without any visual outliers. The Scale-Location plot also appears that the points are randomly scattered. However, the Residuals vs. Leverage plot does not follow a normal distribution as there is one clump towards the left side of the plot. 
+
+h. Explanation of any transformation and justification.
+
+i. Model construction with visual and statistical assumption checks for three
+additional models 
+```{r}
+null_log <- lm(log(totmass) ~ 1, data = plant_subset)
+full_log <- lm(log(totmass) ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset) #creating response variables that includes all the variables
+
+plot(full_log) #plotting the full log 
+
+```
+In this case, the predictor variables are 'species', 'feedlevel', 'sla', 'chlorophyll', 'amass', 'num_lvs', and num_phylls'. These predictor variables were chosen because it would be useful to see how the response variable (log(totmass)) is correlated with all the selected predictor variables that we are testing for. 
+```{r}
+model2_log <- lm(log(totmass) ~ species, data = plant_subset)
+plot(model2_log) #plotting model 2 log which uses species as predictor variable
+```
+In this case, the predictor variable was just 'species', while the response variable was (log(totmass)). This predictor variable was chosen to see if the species of the plants was affecting the relationship between total mass and species. 
+
+```{r}
+model3_log <- lm(log(totmass) ~ chlorophyll, data = plant_subset)
+plot(model3_log) #plotting model 3 log which uses chlorophyll as predictor variable
 ```
 
+In this case, the predictor variable was just 'chlorophyll', while the response variable was (log(totmass)). This predictor variable was chosen to see if the amount of chlorophyll of the plants was affecting the relationship between total mass and species. 
 
+j. 
+```{r}
+car::vif(full_log) #evaluating multicollinearity
+```
+We evaluated multicollinearity by calculating generalized variance inflation factor and determined that species has the highest GVIF, which suggests that this is a high degree of multicollinearity with the other predictor variables. The inflation factors is 1.23 which indicates that the standard error is inflated by a factor of 1.23 due to multicollinearity. Thus, species has the highest degree of multicollinearity, which makes it more challenging to interpret the individual effects of the predictor variables and the response variable. 
 
+k. Model comparison using null model, full model
 
-
-
+```{r}
+AICc(full_log) #compare full model using Akaike’s Information criterion (AIC) values
+AICc(null_log) #compare null model using Akaike’s Information criterion (AIC) values
+AICc(model2_log) #compare model2 log using Akaike’s Information criterion (AIC) values
+AICc(model3_log) #compare model 3 using Akaike’s Information criterion (AIC) values
+MuMIn::model.sel(full_log, model2_log, null_log) #creating model selection table
+```
+Results
 
