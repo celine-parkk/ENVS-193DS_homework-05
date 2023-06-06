@@ -72,15 +72,41 @@ corrplot(plant_cor,
          # change the shape of what's in the cells
          method = "ellipse",
          addCoef.col = "black") 
+  title(sub="To determine the relationships between numerical variables in our dataset, we calculated Pearsons r and visually represented correlation using a correlation plot. For this plot, positive correlations are displayed in blue, and negative correlations are in red. The color intensity and the size of the circle are proportional to the correlation coefficients.")
 
 
-  labs(caption = "To determine the relationships between numerical variables in our dataset, we calculated Pearsons r and visually represented correlation using a correlation plot.")
   
-print(corrrplot + labs(caption = "To determine the relationships between numerical variables in our dataset, we calculated Pearsons r and visually represented correlation using a correlation plot.") )
 
+```
+Thus, while analyzing this plot, we can see that the strongest correlation is between amas (mass-based light-saturated photosynthetic rate of youngest leaf) and sla (specific leaf area of youngest fully-expanded leaf produced by the plant). The weakest (negative) correlation is with amass and num_lvs (total number of pitchers and phyllodes produced by each plant). This shows that there is a strong correlation between between the photosynthetic rate of the youngest leaf, with the specific leaf area.  
+
+e. Pairs plot
+```{r}
+plant_subset %>% 
+  select(species:num_phylls) %>% 
+  ggpairs(title = "This graph creates a plot of each variable compared against the others. Scatterplots of each pair of numeric variables are drawn on the left, while pearson correlation is displayed on the right. Variable distribution is on the diagonal.") 
+  
 ```
 
 
+This, while analyzing this plot it shows that while analyzing the density plots along the diagonal, the data is skewed to the right, which indicates a positive skew. The scatter plots show that most of the data is clustered to the left, while the histograms and boxplots show that there are outliers and a variation within the distribution of the variables. All the correlation values are less than |0.5|, which indicates that there is not a strong correlation between the relationships between the variables.
+
+
+f. Null and full model
+To 
+```{r}
+null <- lm(totmass ~ 1, data = plant_subset)
+full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset)
+
+
+```
+By analyzing the null and full model, we see that  
+
+g. Visual and statistical assumptions checks
+```{r}
+par(mfrow = c(2, 2))
+plot(full)
+```
 
 
 
