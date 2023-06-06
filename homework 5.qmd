@@ -13,10 +13,10 @@ execute:
   warning: false
 ---
 
-**Introduction**: 
-Sarrencia, otherwise known as the North American Pitcher plant, are the largest group of carnivorous plants and Sarrencia is one of the largest pitcher plant genera. According to the National Library of Medicine, the leaf extract of Sarrencia is a "traditional medicine for the treatment of type 2 diabetes", and possesses "antimycobacterial activity for the treatment of tuberculosis-like symptoms". Pitcher plants could be useful to predict individual biomass from physiological adaptations because when pitcher plants have evolved to survive in nutrient-poor environments. Pitcher plants "attracts, traps, and digests prey, to absorb their soluble ingredients for growth and reproduction." Predicting biomass for this physiological characteristic could be important because one could study how, depending on the plant's biomass, each pitcher plant could absorb nutrients faster. The question we are thus addressing is how Sarracenia characteristics predict biomass. The hypothesis that we are testing is that ______. 
+**Introduction**: Sarrencia, otherwise known as the North American Pitcher plant, are the largest group of carnivorous plants and Sarrencia is one of the largest pitcher plant genera. According to the National Library of Medicine, the leaf extract of Sarrencia is a "traditional medicine for the treatment of type 2 diabetes", and possesses "antimycobacterial activity for the treatment of tuberculosis-like symptoms" (Huang, 2022) . Pitcher plants could be useful to predict individual biomass from physiological adaptations because when pitcher plants have evolved to survive in nutrient-poor environments. Pitcher plants "attracts, traps, and digests prey, to absorb their soluble ingredients for growth and reproduction (Gray, 2022)." Predicting biomass for this physiological characteristic could be important because one could study how, depending on the plant's biomass, each pitcher plant could absorb nutrients faster. The question we are thus addressing is how Sarracenia characteristics predict biomass. The hypothesis that we are testing is that Sarrencia characteristics do predict biomass.
 
 Loading the libraries
+
 ```{r}
 library(tidyverse)
 library(here)
@@ -33,6 +33,7 @@ library(GGally)
 ```
 
 Read in data
+
 ```{r}
 plant <- read_csv(here("data", "knb-lter-hfr.109.18", "hf109-01-sarracenia.csv")) %>% 
   # make the column names cleaner
@@ -41,22 +42,22 @@ plant <- read_csv(here("data", "knb-lter-hfr.109.18", "hf109-01-sarracenia.csv")
   select(totmass, species, feedlevel, sla, chlorophyll, amass, num_lvs, num_phylls)
 ```
 
-**Methods**:
-Sampling Methods: 
-a. The data that was collected was collected by conducting a manipulative feeding experiment to test morphological and physiological allometric relationships of carnivorous plants when nutrients are not limiting are more similar to allometric relationships of non-carnivorous plants. The effects of prey availibility oh photosynthetic rate, chlorophyll fluorescence, growth, architecture, and foliar nutrient and chlorophyll content were tested.
+**Methods**: Sampling Methods: a. The data that was collected was collected by conducting a manipulative feeding experiment to test morphological and physiological allometric relationships of carnivorous plants when nutrients are not limiting are more similar to allometric relationships of non-carnivorous plants. The effects of prey availibility oh photosynthetic rate, chlorophyll fluorescence, growth, architecture, and foliar nutrient and chlorophyll content were tested.
 
-b. The data was organized with 32 variables and 120 observations. The data was processed through through quarto document, where the relevant columns were selected (totmass, species, feedlevel, sla, chlorophyll, amass, num_lvs, num_phylls). The data was also cleaned by dropping the NA values. 
+b.  The data was organized with 32 variables and 120 observations. The data was processed through through quarto document, where the relevant columns were selected (totmass, species, feedlevel, sla, chlorophyll, amass, num_lvs, num_phylls). The data was also cleaned by dropping the NA values.
 
-c. Visualizing missing data:
+c.  Visualizing missing data:
+
 ```{r}
 gg_miss_var(plant) + 
   labs(caption = "This is a visualization of the missing data. This visualization shows that there is missing data for chlorophyll, amass, sla, num_phylls, and num_lvs.") +
   theme(plot.caption = element_text(size = 7, hjust=0.5))
 
 ```
-This shows that the data may be affected due to the missing variables that are in this dataset. Due to the large amount of missing data from chlorophyll, amass, and sla, the precision of the findings may be impacted. 
 
-d. Visualization of Pearson's correlation 
+This shows that the data may be affected due to the missing variables that are in this dataset. Due to the large amount of missing data from chlorophyll, amass, and sla, the precision of the findings may be impacted.
+
+d.  Visualization of Pearson's correlation
 
 ```{r}
 plant_subset <- plant %>% 
@@ -78,9 +79,11 @@ corrplot(plant_cor,
   
 
 ```
-Thus, while analyzing this plot, we can see that the strongest correlation is between amas (mass-based light-saturated photosynthetic rate of youngest leaf) and sla (specific leaf area of youngest fully-expanded leaf produced by the plant). The weakest (negative) correlation is with amass and num_lvs (total number of pitchers and phyllodes produced by each plant). This shows that there is a strong correlation between between the photosynthetic rate of the youngest leaf, with the specific leaf area.  
 
-e. Pairs plot
+Thus, while analyzing this plot, we can see that the strongest correlation is between amas (mass-based light-saturated photosynthetic rate of youngest leaf) and sla (specific leaf area of youngest fully-expanded leaf produced by the plant). The weakest (negative) correlation is with amass and num_lvs (total number of pitchers and phyllodes produced by each plant). This shows that there is a strong correlation between between the photosynthetic rate of the youngest leaf, with the specific leaf area.
+
+e.  Pairs plot
+
 ```{r}
 plant_subset %>%  
   select(species:num_phylls) %>% #creating a ggpairs plot and selecting the num_phylls species
@@ -88,11 +91,10 @@ plant_subset %>%
   
 ```
 
+This, while analyzing this plot it shows that while analyzing the density plots along the diagonal, the data is skewed to the right, which indicates a positive skew. The scatter plots show that most of the data is clustered to the left, while the histograms and boxplots show that there are outliers and a variation within the distribution of the variables. All the correlation values are less than \|0.5\|, which indicates that there is not a strong correlation between the relationships between the variables.
 
-This, while analyzing this plot it shows that while analyzing the density plots along the diagonal, the data is skewed to the right, which indicates a positive skew. The scatter plots show that most of the data is clustered to the left, while the histograms and boxplots show that there are outliers and a variation within the distribution of the variables. All the correlation values are less than |0.5|, which indicates that there is not a strong correlation between the relationships between the variables.
+f.  Null and full model
 
-
-f. Null and full model
 ```{r}
 null <- lm(totmass ~ 1, data = plant_subset) #using plant_subse data and using totmass as response variable
 full <- lm(totmass ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset) #creating a model with all the predictor variables
@@ -101,19 +103,22 @@ null
 full
 
 ```
+
 To determine how species and physiological characteristics predict biomass, we fit multiple linear models. By analyzing the null and full model, we see both positive and negative between the predictor (totmass), and the response variable. Additionally, larger coefficients suggest a stronger impact on the response variable. For example. The correlation that is the weakest is with speciespsittacin, with a coefficient of -4.1934. The correlation that is the strongest is with speciesleucophylla, with a coefficient of 12.657.
 
-g. Visual and statistical assumptions checks
+g.  Visual and statistical assumptions checks
+
 ```{r}
 par(mfrow = c(2, 2))
 plot(full) #creating visual assumptions check plot
 ```
-For the most part, the data looks normal. The residuals vs. fitted plot appears randomly scattered along the horizontal line. Similarly, the Q-Q Residuals also follows a line without any visual outliers. The Scale-Location plot also appears that the points are randomly scattered. However, the Residuals vs. Leverage plot does not follow a normal distribution as there is one clump towards the left side of the plot. 
 
-h. Explanation of any transformation and justification.
+For the most part, the data looks normal. The residuals vs. fitted plot appears randomly scattered along the horizontal line. Similarly, the Q-Q Residuals also follows a line without any visual outliers. The Scale-Location plot also appears that the points are randomly scattered. However, the Residuals vs. Leverage plot does not follow a normal distribution as there is one clump towards the left side of the plot.
 
-i. Model construction with visual and statistical assumption checks for three
-additional models 
+h.  Explanation of any transformation and justification.
+
+i.  Model construction with visual and statistical assumption checks for three additional models
+
 ```{r}
 null_log <- lm(log(totmass) ~ 1, data = plant_subset)
 full_log <- lm(log(totmass) ~ species + feedlevel + sla + chlorophyll + amass + num_lvs + num_phylls, data = plant_subset) #creating response variables that includes all the variables
@@ -121,33 +126,37 @@ full_log <- lm(log(totmass) ~ species + feedlevel + sla + chlorophyll + amass + 
 plot(full_log) #plotting the full log 
 
 ```
-In this case, the predictor variables are 'species', 'feedlevel', 'sla', 'chlorophyll', 'amass', 'num_lvs', and num_phylls'. These predictor variables were chosen because it would be useful to see how the response variable (log(totmass)) is correlated with all the selected predictor variables that we are testing for. 
+
+In this case, the predictor variables are 'species', 'feedlevel', 'sla', 'chlorophyll', 'amass', 'num_lvs', and num_phylls'. These predictor variables were chosen because it would be useful to see how the response variable (log(totmass)) is correlated with all the selected predictor variables that we are testing for.
+
 ```{r}
 model2_log <- lm(log(totmass) ~ species, data = plant_subset)
 plot(model2_log) #plotting model 2 log which uses species as predictor variable
 ```
-In this case, the predictor variable was just 'species', while the response variable was (log(totmass)). This predictor variable was chosen to see if the species of the plants was affecting the relationship between total mass and species. 
+
+In this case, the predictor variable was just 'species', while the response variable was (log(totmass)). This predictor variable was chosen to see if the species of the plants was affecting the relationship between total mass and species.
 
 ```{r}
 model3_log <- lm(log(totmass) ~ chlorophyll, data = plant_subset)
 plot(model3_log) #plotting model 3 log which uses chlorophyll as predictor variable
 ```
 
-In this case, the predictor variable was just 'chlorophyll', while the response variable was (log(totmass)). This predictor variable was chosen to see if the amount of chlorophyll of the plants was affecting the relationship between total mass and species. 
+In this case, the predictor variable was just 'chlorophyll', while the response variable was (log(totmass)). This predictor variable was chosen to see if the amount of chlorophyll of the plants was affecting the relationship between total mass and species.
 
 ```{r}
 model4_log <- lm(log(totmass) ~ species + sla + feedlevel + chlorophyll + num_lvs + num_phylls, data = plant_subset)
 model4_log
 ```
 
+j.  
 
-j. 
 ```{r}
 car::vif(full_log) #evaluating multicollinearity
 ```
-We evaluated multicollinearity by calculating generalized variance inflation factor and determined that species has the highest GVIF, which suggests that this is a high degree of multicollinearity with the other predictor variables. The inflation factors is 1.23 which indicates that the standard error is inflated by a factor of 1.23 due to multicollinearity. Thus, species has the highest degree of multicollinearity, which makes it more challenging to interpret the individual effects of the predictor variables and the response variable. 
 
-k. Model comparison using null model, full model
+We evaluated multicollinearity by calculating generalized variance inflation factor and determined that species has the highest GVIF, which suggests that this is a high degree of multicollinearity with the other predictor variables. The inflation factors is 1.23 which indicates that the standard error is inflated by a factor of 1.23 due to multicollinearity. Thus, species has the highest degree of multicollinearity, which makes it more challenging to interpret the individual effects of the predictor variables and the response variable.
+
+k.  Model comparison using null model, full model
 
 ```{r}
 AICc(full_log) #compare full model using Akaike’s Information criterion (AIC) values
@@ -157,8 +166,9 @@ AICc(model3_log) #compare model 3 using Akaike’s Information criterion (AIC) v
 AICc(model4_log) #comare model 4 using Akike's Information criterion (AIC) values
 MuMIn::model.sel(full_log, model2_log, null_log) #creating model selection table
 ```
-Results:
-8a. We found that the 4th model including all the predictor variables except amas(mass-based light-saturated photosynthetic rate of youngest leaf) best predicted the relationship between the characteristics and biomass. This model was chosen because between all the models, this model had the lowest AIc value.
+
+Results: 8a. We found that the 4th model including all the predictor variables except amas(mass-based light-saturated photosynthetic rate of youngest leaf) best predicted the relationship between the characteristics and biomass. This model was chosen because between all the models, this model had the lowest AIc value.
+
 ```{r}
 summary(model4_log)
 table <- tidy(model4_log, conf.int = TRUE, exponentiate = TRUE) %>% 
@@ -173,11 +183,10 @@ table <- tidy(model4_log, conf.int = TRUE, exponentiate = TRUE) %>%
 table
 ```
 
+b.  This model indicates that there is a significant relationship between most of the response variables and the biomass. All of the p-values, except for feed level is less .05, which indicates that the predictor variable has a significant effect on the response variable (biomass). The F-statistic is also 41.26 with a p-value less than 0.05 which indicates that the model as a whole is statistically significant.
 
-b.
-This model indicates that there is a significant relationship between most of the response variables and the biomass. All of the p-values, except for feed level is less .05, which indicates that the predictor variable has a significant effect on the response variable (biomass).  The F-statistic is also 41.26 with a p-value less than 0.05 which indicates that the model as a whole is statistically significant.
+c.  
 
-c. 
 ```{r}
 model_pred <- ggpredict(model4_log, terms = "species", back.transform = TRUE) #creating ggpredict plot
 
@@ -185,4 +194,13 @@ plot(ggpredict(model4_log, terms = "species", back.transform = TRUE), add.data =
   labs(caption = "Visualization of model predictions, which shows the relationship between species and the biomass. This graph shows that there is a strong correlation between species and biomass.") +
   theme(plot.caption = element_text(size = 6, hjust=0.5)) #adjusting caption plot size
 ```
-d. Biologically, it shows that the species of the Sarrencia plants predict the biomass. For example, in this model visualization, it shows that the Leucophylla have the biggest biomass. Thus, depending on the species of the Sarrencia, one can predict the biomass of the plant.
+
+d.  Biologically, it shows that the species of the Sarrencia plants predict the biomass. For example, in this model visualization, it shows that the Leucophylla have the biggest biomass. Thus, depending on the species of the Sarrencia, one can predict the biomass of the plant.
+
+9.Bibliography
+
+Ashworth, James. “Pitcher Plants Might Be Luring in Prey Using Specialised Scents.” Natural History Museum, www.nhm.ac.uk/discover/news/2023/april/pitcher-plants-might-be-luring-prey-specialised-scents.html. Accessed 6 June 2023. 
+
+Gray, Sarah M., et al. “The Bacterial Composition within the Sarracenia Purpurea Model System: Local Scale Differences and the Relationship with the Other Members of the Food Web.” PLOS ONE, journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0050969. Accessed 6 June 2023. 
+
+Huang, Yen-Hua, et al. “Anticancer and Antioxidant Activities of the Root Extract of the Carnivorous Pitcher Plant Sarracenia Purpurea.” Plants (Basel, Switzerland), 23 June 2022, www.ncbi.nlm.nih.gov/pmc/articles/PMC9269354/. 
