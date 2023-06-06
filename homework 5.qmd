@@ -59,7 +59,7 @@ This shows that the data may be affected due to the missing variables that are i
 
 d.  Visualization of Pearson's correlation
 
-```{r}
+```{r fig.height = 7, fig.width = 20}
 plant_subset <- plant %>% 
   drop_na(sla, chlorophyll, amass, num_lvs, num_phylls) #subsetting the data by dropping NAs
 
@@ -185,7 +185,7 @@ table
 
 b.  This model indicates that there is a significant relationship between most of the response variables and the biomass. All of the p-values, except for feed level is less .05, which indicates that the predictor variable has a significant effect on the response variable (biomass). The F-statistic is also 41.26 with a p-value less than 0.05 which indicates that the model as a whole is statistically significant.
 
-c.  
+c. We transformed the model by adding log, to ensure that the model would fit more precisely into our visualizations. Otherwise, the data would look skewed because the numbers are too big/too small. 
 
 ```{r}
 model_pred <- ggpredict(model4_log, terms = "species", back.transform = TRUE) #creating ggpredict plot
