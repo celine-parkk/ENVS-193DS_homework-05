@@ -59,7 +59,7 @@ This shows that the data may be affected due to the missing variables that are i
 
 d.  Visualization of Pearson's correlation
 
-```{r fig.height = 7, fig.width = 20}
+```{r fig.height = 7, fig.width = 25}
 plant_subset <- plant %>% 
   drop_na(sla, chlorophyll, amass, num_lvs, num_phylls) #subsetting the data by dropping NAs
 
