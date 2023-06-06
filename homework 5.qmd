@@ -84,7 +84,7 @@ Thus, while analyzing this plot, we can see that the strongest correlation is be
 
 e.  Pairs plot
 
-```{r fig.height = 8, fig.width = 16}
+```{r fig.height = 8, fig.width = 25}
 plant_subset %>%  
   select(species:num_phylls) %>% #creating a ggpairs plot and selecting the num_phylls species
   ggpairs(title = "This graph creates a plot of each variable compared against the others. Scatterplots of each pair of numeric variables are drawn on the left, while pearson correlation is displayed on the right. Variable distribution is on the diagonal.") #adding the caption
